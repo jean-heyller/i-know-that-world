@@ -20,8 +20,29 @@ body {
   font-size: 16px;
   transition: transform 0.3s ease;
   border-radius: 10px;
+  display: none;
+
+  
 }
 
 .button-into button:hover {
   transform: scale(1.2);
+}
+
+.login {
+  margin-left: 700px;
+  margin-top: 80px;
+  transition: transform 0.7s ease;
+  display: none;
+}
+
+.btns-Play {
+  margin-left: 600px;
+}
+
+.btns-Play button {
+  padding: 10px 20px;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  border-radius: 10px;
 }
