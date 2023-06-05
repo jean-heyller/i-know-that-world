@@ -11,6 +11,11 @@ body {
   margin-top: 80px;
 }
 
+.title p {
+  margin-left: 500px;
+  font-size: 30px;
+
+}
 .button-into {
   margin-left: 700px;
 }
@@ -20,7 +25,7 @@ body {
   font-size: 16px;
   transition: transform 0.3s ease;
   border-radius: 10px;
-  display: none;
+  /* display: none; */
 
   
 }
@@ -38,6 +43,7 @@ body {
 
 .btns-Play {
   margin-left: 600px;
+  display: none;
 }
 
 .btns-Play button {
@@ -45,4 +51,78 @@ body {
   font-size: 16px;
   transition: transform 0.3s ease;
   border-radius: 10px;
+}
+
+.btns-Play  button:hover {
+  transform: scale(1.2);
+}
+.nivelsContainer {
+margin-left: 300px;
+}
+.nivelsContainer button {
+  padding: 10px 20px;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  border-radius: 10px;
+  padding-right: 10px;
+  margin-left: 10px;
+}
+
+.nivelsContainer p {
+  margin-left: 800px;
+}
+
+
+.desbloqueado {
+  /* Estilos para el botón desbloqueado */
+  background-color: green;
+  color: white;
+  cursor: pointer;
+}
+
+.bloqueado {
+  /* Estilos para el botón bloqueado */
+  background-color: gray;
+  color: black;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.nivelsContainer h3 {
+  font-size: 90px;
+  margin-left: 350px;
+
+}
+/* 
+.btnYes {
+  display: none;
+}
+
+.btnNot {
+  display: none;
+
+} */
+
+.btnsOptions {
+  display: none;
+}
+
+.btnsOptions {
+  display: none;
+  position: fixed; /* Opcional: también puedes usar 'position: absolute;' */
+  top: 100px; /* Posición vertical fija */
+  left: 100px; /* Posición horizontal fija */
+  /* Otros estilos para el div */
+  margin-top: 430px;
+  margin-left: 600px;
+}
+
+.btnsOptions button {
+  padding: 10px 20px;
+  font-size: 16px;
+  transition: transform 0.3s ease;
+  border-radius: 10px;
+  padding-right: 10px;
+  margin-left: 10px;
+
 }

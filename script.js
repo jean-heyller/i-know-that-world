@@ -3,6 +3,30 @@ var apodoInput = document.getElementById('nickName');
 var getInto = document.getElementById('getInto');
 var login = document.getElementById('login');
 var btnLogin = document.getElementById('btnSave');
+var btnsPlay = document.getElementById('btns-Play');
+var btnPlay = document.getElementById('btnPlay');
+var nivelsContainer = document.getElementById('nivelsContainer');
+var btnYes = document.getElementById('btnYes');
+var btnsOptions = document.getElementById('btnsOptions');
+var score = document.getElementById('score');
+
+
+
+const palabras = ['camisa','sorteo','barco','sandalia','loma','peru','hola',"zeus","afrodita", "grisales","conejo","rabia","acelerador","manuales","gorro"]
+// array para comparar las palabras
+const palabrasMostradas = [];
+
+const palabrasAle = [];
+
+let palabraPantalla;
+
+ let punctuation = 0;
+
+ let press = false;
+ 
+ 
+var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
+var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
 
 // Agregar evento al botón de "Ingresar"
 getInto.addEventListener('click', function() {
@@ -24,4 +48,172 @@ btnLogin.addEventListener('click', function() {
     alert('Ingrese un apodo válido');
   }
   login.style.display = 'none';
+  btnsPlay.style.display = 'block';
+});
+
+function mostrarOpciones() {
+  btnsOptions.style.display = 'block';
+ /*  const puntaje = document.createElement('h1');
+  puntaje.textContent = 0;
+  nivelsContainer.appendChild(puntaje); */
+
+   /* btnNot.style.display = 'block';   */
+  // creo un nuevo array con otras 5 palabras aletorias 
+  let palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
+  // ejecuto un bucle para que las palabras no se repitan 
+  while (!sonDiferentes(palabrasMostradas, palabrasAleatorias)) {
+    palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
+  }
+  // concateno las palabras mostradas y las nuevas palabras totalmente diferentes 
+  const palabrasAMostrar = [...palabrasMostradas, ...palabrasAleatorias];
+  // cambio los indices del array par mostrarlas aletoriamentes 
+  shuffleArray(palabrasAMostrar);
+
+  let index = 0;
+  const intervalo = setInterval(function() {
+    if (index >= palabrasAMostrar.length) {
+      clearInterval(intervalo);
+      console.log(palabrasMostradas);
+      console.log(palabrasAle);
+      return;
+    }
+    
+    const palabraElement = document.createElement('h3');
+    palabraElement.textContent = palabrasAMostrar[index];
+    nivelsContainer.appendChild(palabraElement);
+    palabrasAle.push(palabrasAMostrar[index]);
+    palabraPantalla = palabrasAMostrar[index];
+    press = false;
+    index++;
+
+    setTimeout(function() {
+      palabraElement.remove();
+    }, 3000);
+  }, 4000);
+}
+
+function mostrarPalabrasNivel(nivel) {
+  // Limpiar el contenedor de niveles
+  nivelsContainer.innerHTML = '';
+
+  // Obtener las palabras aleatorias del nivel
+  const palabrasNivel = obtenerPalabrasAleatorias(5, palabras);
+
+  // Mostrar la primera palabra inmediatamente
+  const primeraPalabraElement = document.createElement('h3');
+  primeraPalabraElement.textContent = palabrasNivel[0];
+  nivelsContainer.appendChild(primeraPalabraElement);
+  palabrasMostradas.push(palabrasNivel[0]);
+
+  // Eliminar la primera palabra después de un breve retraso
+  setTimeout(function() {
+    primeraPalabraElement.remove();
+  }, 5000);
+
+  // Mostrar las palabras restantes después de cada 5 segundos
+  let index = 1;
+  const intervalo = setInterval(function() {
+    if (index >= palabrasNivel.length) {
+      clearInterval(intervalo);
+      mostrarOpciones(palabrasMostradas);
+      return;
+    }
+    const palabraElement = document.createElement('h3');
+    palabraElement.textContent = palabrasNivel[index];
+    nivelsContainer.appendChild(palabraElement);
+    palabrasMostradas.push(palabrasNivel[index]);
+    index++;
+
+    // Eliminar la palabra mostrada después de 5 segundos
+    setTimeout(function() {
+      palabraElement.remove();
+    }, 4500);
+  }, 5000);
+}
+
+
+
+btnPlay.addEventListener('click', function() {
+  btnsPlay.style.display = 'none';
+
+  // Crear los botones de niveles
+  for (let i = 1; i <= 10; i++) {
+    const nivelButton = document.createElement('button');
+    nivelButton.textContent = 'Nivel ' + i;
+
+    if (i === 1) {
+      nivelButton.classList.add('desbloqueado'); // Aplicar clase "desbloqueado" al primer botón
+    } else {
+      nivelButton.classList.add('bloqueado'); // Aplicar clase "bloqueado" a los demás botones
+    }
+
+    nivelsContainer.appendChild(nivelButton);
+
+    nivelButton.addEventListener('click', function() {
+      const nivel = i;
+
+      if (nivel === 1 || (nivel === 2 && !isLevelButton2Locked)) {
+        mostrarPalabrasNivel(nivel);
+      }
+    });
+  }
+});
+
+// Función para obtener un número específico de palabras aleatorias de un array
+function obtenerPalabrasAleatorias(numeroPalabras, array) {
+  const palabrasAleatorias = [];
+  const copiaArray = [...array]; // Copiar el array original para no modificarlo directamente
+
+  for (let i = 0; i < numeroPalabras; i++) {
+    const indiceAleatorio = Math.floor(Math.random() * copiaArray.length);//obtenemos un indice aletorio
+    const palabraAleatoria = copiaArray.splice(indiceAleatorio, 1)[0];//sacamos el contenido de ese indice
+    palabrasAleatorias.push(palabraAleatoria);//guardamos la plabra en el array 
+  }
+  
+
+  return palabrasAleatorias;
+}
+// funcion para verificar si los array son diferentes para que no repitan las palabras mostradas 
+function sonDiferentes(arr1, arr2) {
+  // Verificar si los arrays tienen la misma longitud
+/*   if (arr1.length !== arr2.length) {
+    return true;
+  } */
+
+  // Verificar si cada elemento de arr1 es diferente al correspondiente en arr2
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr2.includes(arr1[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// funcion que cambia los indices del array para mostrarlos aletoriamente
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+
+btnYes.addEventListener('click', function() {
+  if (press==false) {
+    isBtnYesLocked = true; // Bloquear el botón "Yes"
+    
+    if (palabrasMostradas.includes(palabraPantalla)) {
+      punctuation++;
+      score.textContent = punctuation;
+      press = true;
+    }
+    else {
+      alert("palabra incorrecta")
+    }
+
+    setTimeout(function() {
+      isBtnYesLocked = false; // Desbloquear el botón "Yes" después de esperar
+    }, 3000); // Esperar 3 segundos (ajusta el tiempo según tus necesidades)
+  }
 });
