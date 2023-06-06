@@ -9,6 +9,7 @@ var nivelsContainer = document.getElementById('nivelsContainer');
 var btnYes = document.getElementById('btnYes');
 var btnsOptions = document.getElementById('btnsOptions');
 var score = document.getElementById('score');
+var check = document.getElementById('check');
 
 
 
@@ -23,6 +24,10 @@ let palabraPantalla;
  let punctuation = 0;
 
  let press = false;
+
+ let nivelgame = [1]
+
+ let nivelButtons = [];
  
  
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
@@ -51,50 +56,48 @@ btnLogin.addEventListener('click', function() {
   btnsPlay.style.display = 'block';
 });
 
-function mostrarOpciones() {
-  btnsOptions.style.display = 'block';
- /*  const puntaje = document.createElement('h1');
-  puntaje.textContent = 0;
-  nivelsContainer.appendChild(puntaje); */
+//crea los botones de los niveles 
+btnPlay.addEventListener('click', function() {
+  btnsPlay.style.display = 'none';
 
-   /* btnNot.style.display = 'block';   */
-  // creo un nuevo array con otras 5 palabras aletorias 
-  let palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
-  // ejecuto un bucle para que las palabras no se repitan 
-  while (!sonDiferentes(palabrasMostradas, palabrasAleatorias)) {
-    palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
-  }
-  // concateno las palabras mostradas y las nuevas palabras totalmente diferentes 
-  const palabrasAMostrar = [...palabrasMostradas, ...palabrasAleatorias];
-  // cambio los indices del array par mostrarlas aletoriamentes 
-  shuffleArray(palabrasAMostrar);
+  // Crear los botones de niveles
+  for (let i = 1; i <= 10; i++) {
+    const nivelButton = document.createElement('button');
+    nivelButton.textContent = 'Nivel ' + i;
 
-  let index = 0;
-  const intervalo = setInterval(function() {
-    if (index >= palabrasAMostrar.length) {
-      clearInterval(intervalo);
-      console.log(palabrasMostradas);
-      console.log(palabrasAle);
-      return;
+    if (i === 1) {
+      nivelButton.classList.add('desbloqueado'); // Aplicar clase "desbloqueado" al primer botón
+    } else {
+      nivelButton.classList.add('bloqueado'); // Aplicar clase "bloqueado" a los demás botones
     }
     
-    const palabraElement = document.createElement('h3');
-    palabraElement.textContent = palabrasAMostrar[index];
-    nivelsContainer.appendChild(palabraElement);
-    palabrasAle.push(palabrasAMostrar[index]);
-    palabraPantalla = palabrasAMostrar[index];
-    press = false;
-    index++;
+    nivelButton.classList.add('nivel-' + i); // Agregar la clase CSS "nivel-x" al botón
 
-    setTimeout(function() {
-      palabraElement.remove();
-    }, 3000);
-  }, 4000);
-}
+    nivelsContainer.appendChild(nivelButton);
+    nivelButtons.push(nivelButton); // Agregar el botón al array de botones de niveles
+
+    nivelButton.addEventListener('click', function() {
+      const nivel = i;
+      //comprueba si se puede jugar ese nivel 
+      if (nivelgame.includes(nivel)) {
+        mostrarPalabrasNivel(nivel);
+      }
+    });
+  }
+  
+});
+
+  // Ocultar los botones de niveles
+  /* nivelButtons.forEach(function(button) {
+    button.style.display = 'none';
+  }); */
+
 
 function mostrarPalabrasNivel(nivel) {
-  // Limpiar el contenedor de niveles
-  nivelsContainer.innerHTML = '';
+  // oculta los botones 
+  nivelButtons.forEach(function(button) {
+    button.style.display = 'none';
+  });
 
   // Obtener las palabras aleatorias del nivel
   const palabrasNivel = obtenerPalabrasAleatorias(5, palabras);
@@ -131,33 +134,53 @@ function mostrarPalabrasNivel(nivel) {
   }, 5000);
 }
 
+function mostrarOpciones() {
+  btnsOptions.style.display = 'block';
+ /*  const puntaje = document.createElement('h1');
+  puntaje.textContent = 0;
+  nivelsContainer.appendChild(puntaje); */
 
-
-btnPlay.addEventListener('click', function() {
-  btnsPlay.style.display = 'none';
-
-  // Crear los botones de niveles
-  for (let i = 1; i <= 10; i++) {
-    const nivelButton = document.createElement('button');
-    nivelButton.textContent = 'Nivel ' + i;
-
-    if (i === 1) {
-      nivelButton.classList.add('desbloqueado'); // Aplicar clase "desbloqueado" al primer botón
-    } else {
-      nivelButton.classList.add('bloqueado'); // Aplicar clase "bloqueado" a los demás botones
-    }
-
-    nivelsContainer.appendChild(nivelButton);
-
-    nivelButton.addEventListener('click', function() {
-      const nivel = i;
-
-      if (nivel === 1 || (nivel === 2 && !isLevelButton2Locked)) {
-        mostrarPalabrasNivel(nivel);
-      }
-    });
+   /* btnNot.style.display = 'block';   */
+  // creo un nuevo array con otras 5 palabras aletorias 
+  let palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
+  // ejecuto un bucle para que las palabras no se repitan 
+  while (!sonDiferentes(palabrasMostradas, palabrasAleatorias)) {
+    palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
   }
-});
+  // concateno las palabras mostradas y las nuevas palabras totalmente diferentes 
+  const palabrasAMostrar = [...palabrasMostradas, ...palabrasAleatorias];
+  // cambio los indices del array par mostrarlas aletoriamentes 
+  shuffleArray(palabrasAMostrar);
+
+  let index = 0;
+  const intervalo = setInterval(function() {
+    if (index >= palabrasAMostrar.length) {
+      clearInterval(intervalo);
+      if(punctuation>4) desbloquearSiguienteNivel(nivelgame)
+      nivelButtons.forEach(function(button) {
+        button.style.display = 'block';
+      });
+      
+      return;
+    }
+    
+    const palabraElement = document.createElement('h3');
+    palabraElement.textContent = palabrasAMostrar[index];
+    nivelsContainer.appendChild(palabraElement);
+    palabrasAle.push(palabrasAMostrar[index]);
+    palabraPantalla = palabrasAMostrar[index];
+    press = false;
+    index++;
+
+    setTimeout(function() {
+      palabraElement.remove();
+    }, 3000);
+  }, 4000);
+}
+
+
+
+
 
 // Función para obtener un número específico de palabras aleatorias de un array
 function obtenerPalabrasAleatorias(numeroPalabras, array) {
@@ -207,13 +230,38 @@ btnYes.addEventListener('click', function() {
       punctuation++;
       score.textContent = punctuation;
       press = true;
-    }
-    else {
-      alert("palabra incorrecta")
+      check.style.display = 'block';
     }
 
     setTimeout(function() {
-      isBtnYesLocked = false; // Desbloquear el botón "Yes" después de esperar
-    }, 3000); // Esperar 3 segundos (ajusta el tiempo según tus necesidades)
+      check.style.display = 'none'; 
+    }, 1000);  
   }
 });
+
+
+// funcion que se encarga de desbloquear el siguiente nivel 
+function desbloquearSiguienteNivel(nivelActual) {
+ /*  const nivelNext = (nivelActual + 1)
+
+  if(!nivelgame.includes(nivelNext)){
+    nivelgame.push(nivelNext);
+  } */
+  
+  const nivelButton = document.querySelector('.nivel-' + nivelActual);
+  
+
+  if (nivelButton) {
+    nivelButton.classList.remove('bloqueado');
+    nivelButton.classList.add('desbloqueado');
+
+    // Desbloquear el siguiente nivel si existe
+    const siguienteNivel = nivelActual + 1;
+    const siguienteNivelButton = document.querySelector('.nivel-' + siguienteNivel);
+
+    if (siguienteNivelButton) {
+      siguienteNivelButton.classList.remove('bloqueado');
+      siguienteNivelButton.classList.add('desbloqueado');
+    }
+  }
+}

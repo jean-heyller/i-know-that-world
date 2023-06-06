@@ -11,11 +11,18 @@ body {
   margin-top: 80px;
 }
 
-.title p {
-  margin-left: 500px;
+.title h5 {
+  margin-left: 600px;
   font-size: 30px;
-
+  margin-top: -60px;
 }
+
+.title p {
+  margin-left: 650px;
+  font-size: 30px;
+  margin-top: -40px;
+}
+
 .button-into {
   margin-left: 700px;
 }
@@ -58,6 +65,7 @@ body {
 }
 .nivelsContainer {
 margin-left: 300px;
+position: fixed;
 }
 .nivelsContainer button {
   padding: 10px 20px;
