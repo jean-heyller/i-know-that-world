@@ -1,3 +1,6 @@
+
+
+
 // Obtener elementos del DOM
 var apodoInput = document.getElementById('nickName');
 var getInto = document.getElementById('getInto');
@@ -13,14 +16,14 @@ var check = document.getElementById('check');
 
 
 
-const palabras = ['camisa','sorteo','barco','sandalia','loma','peru','hola',"zeus","afrodita", "grisales","conejo","rabia","acelerador","manuales","gorro"]
+let palabras  /* ['camisa','sorteo','barco','sandalia','loma','peru','hola',"zeus","afrodita", "grisales","conejo","rabia","acelerador","manuales","gorro"] */
 // array para comparar las palabras
 const palabrasMostradas = [];
 
 const palabrasAle = [];
-
+//para comparar las palabras que salen en pantalla
 let palabraPantalla;
-
+//
  let punctuation = 0;
 
  let press = false;
@@ -29,7 +32,7 @@ let palabraPantalla;
 
  let nivelButtons = [];
 
- let nivelCurrent 
+ let nivelCurrent; 
  
  
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
@@ -40,20 +43,22 @@ getInto.addEventListener('click', function() {
     //ocultar el boton de ingresar y activa el login 
     getInto.style.display = 'none';
     login.style.display = 'block';
+    leerArchivo();
   
 });
 
 // Agregar evento al botón de "Guardar"
 btnLogin.addEventListener('click', function() {
-  var apodo = apodoInput.value; // Obtener el valor del input
+  var texto = apodoInput.value; // Obtener el valor del input
   
   // Verificar si se ingresó un apodo válido
-  if (apodo.trim() !== '') {
+ /*  if (apodo.trim() !== '') {
     localStorage.setItem('apodo', apodo); // Guardar apodo en Local Storage
     alert('Apodo guardado exitosamente');
   } else {
     alert('Ingrese un apodo válido');
-  }
+  } */
+  addUser(texto)
   login.style.display = 'none';
   btnsPlay.style.display = 'block';
 });
@@ -261,7 +266,63 @@ function desbloquearSiguienteNivel(nivelActual) {
       siguienteNivelButton.classList.add('desbloqueado');
 
       // Agregar el siguiente nivel a la lista de niveles desbloqueados
-      nivelgame.push(siguienteNivel);
+      if(!nivelgame.includes(siguienteNivel)){
+        nivelgame.push(siguienteNivel);
+      }
     }
   }
+}
+
+//funcion que obtiene las palabras del archivo txt
+function leerArchivo() {
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var contenido = this.responseText;
+      var arrayDatos = contenido.split('\n'); // Divide el contenido por líneas 
+      /* var arrayDatos = contenido.filter(Boolean);  */ // Elimina las líneas vacías
+
+      palabras = arrayDatos // Imprime el array de datos en la consola
+    }
+  };
+
+  xhttp.open("GET", "diccionario.txt", true);
+  xhttp.send();
+}
+/* 
+function addUser(texto) {
+
+
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this.responseText); // Respuesta del servidor
+      console.log(texto)
+    }
+  };
+
+  xhttp.open("GET", "agregar.php", true);
+  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhttp.send("texto=" + encodeURIComponent(texto));
+} */
+
+function addUser(texto) {
+  fetch('http://localhost:3000/escribirArchivo', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ palabra: texto }),
+})
+  .then((response) => {
+    if (response.ok) {
+      console.log('Palabra guardada correctamente');
+    } else {
+      console.log('Error al guardar la palabra');
+    }
+  })
+  .catch((error) => {
+    console.error('Error en la solicitud:', error);
+  });
 }
