@@ -38,7 +38,7 @@ let palabraPantalla;
 
  let user;
  
- 
+ let win ;
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
 var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
 
@@ -109,14 +109,57 @@ btnPlay.addEventListener('click', function() {
   }); */
 
 
-function mostrarPalabrasNivel(nivel) {
+function mostrarPalabrasNivel(nivelCurrent) {
   // oculta los botones 
   nivelButtons.forEach(function(button) {
     button.style.display = 'none';
   });
-
   // Obtener las palabras aleatorias del nivel
-  const palabrasNivel = obtenerPalabrasAleatorias(5, palabras);
+
+  if(nivelCurrent==1 || nivelCurrent==2) {
+    totalWords = nivelCurrent*10;
+    win = totalWords*0.7
+  }
+  if(nivelCurrent==3) {
+    totalWords = nivelCurrent*10-5;
+    win = totalWords*0.75
+  }
+
+  if(nivelCurrent==4){
+    totalWords = nivelCurrent*10-10;
+    win = totalWords*0.8
+  }
+
+  if(nivelCurrent==5){
+    totalWords = nivelCurrent*10-15;
+    win = totalWords*0.8
+  }
+  if(nivelCurrent== 6){
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.85
+  }
+
+  if(nivelCurrent==7){
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.9
+  }
+
+  if(nivelCurrent==8) {
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.9
+  }
+
+  if(nivelCurrent==9){
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.95
+  }
+
+  if(nivelCurrent==10){
+    totalWords = nivelCurrent*10;
+    win = totalWords
+  }
+
+  const palabrasNivel = obtenerPalabrasAleatorias(totalWords, palabras);
 
   // Mostrar la primera palabra inmediatamente
   const primeraPalabraElement = document.createElement('h3');
@@ -152,31 +195,73 @@ function mostrarPalabrasNivel(nivel) {
 
 function mostrarOpciones() {
   btnsOptions.style.display = 'block';
- /*  const puntaje = document.createElement('h1');
-  puntaje.textContent = 0;
-  nivelsContainer.appendChild(puntaje); */
 
-   /* btnNot.style.display = 'block';   */
-  // creo un nuevo array con otras 5 palabras aletorias 
-  let palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
+  if(nivelCurrent==1 || nivelCurrent==2) {
+    totalWords = nivelCurrent*10;
+  }
+  if(nivelCurrent==3) {
+    totalWords = nivelCurrent*10-5;
+  }
+
+  if(nivelCurrent==4){
+    totalWords = nivelCurrent*10-10;
+  }
+
+  if(nivelCurrent==5){
+    totalWords = nivelCurrent*10-15;
+  }
+  if(nivelCurrent== 6){
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==7){
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==8) {
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==9){
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==10){
+    totalWords = nivelCurrent*10;
+  }
+
+  let palabrasAleatorias = obtenerPalabrasAleatorias(totalWords, palabras);
   // ejecuto un bucle para que las palabras no se repitan 
   while (!sonDiferentes(palabrasMostradas, palabrasAleatorias)) {
-    palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
+    palabrasAleatorias = obtenerPalabrasAleatorias(totalWords, palabras);
   }
   // concateno las palabras mostradas y las nuevas palabras totalmente diferentes 
   const palabrasAMostrar = [...palabrasMostradas, ...palabrasAleatorias];
   // cambio los indices del array par mostrarlas aletoriamentes 
   shuffleArray(palabrasAMostrar);
 
-  let index = 0;
+  const primeraPalabraElement = document.createElement('h3');
+  primeraPalabraElement.textContent = palabrasAMostrar[0];
+  nivelsContainer.appendChild(primeraPalabraElement);
+  palabrasAle.push(palabrasAMostrar[0]);
+
+  setTimeout(function() {
+    primeraPalabraElement.remove();
+  }, 5000);
+
+
+  let index = 1;
   const intervalo = setInterval(function() {
     if (index >= palabrasAMostrar.length) {
       clearInterval(intervalo);
-      if(punctuation>4) desbloquearSiguienteNivel(nivelCurrent)
+      if(punctuation=>win) {
+        desbloquearSiguienteNivel(nivelCurrent)
+        const nivelnext = nivelgame[nivelgame.length-1];
+        updateUser(user,nivelnext)
+      }
       nivelButtons.forEach(function(button) {
         button.style.display = 'block';
       });
-      console.log(nivelgame)
       
       return;
     }
@@ -191,8 +276,8 @@ function mostrarOpciones() {
 
     setTimeout(function() {
       palabraElement.remove();
-    }, 3000);
-  }, 4000);
+    }, 4500);
+  }, 5000);
 }
 
 
