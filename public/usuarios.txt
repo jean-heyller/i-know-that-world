@@ -1,4 +1,4 @@
-palomino:1
+palomino:2
 palomino:1
 camila:2
 jean:2

@@ -10,7 +10,6 @@ body {
   font-size: 40px;
   margin-top: 150px;
 
-
 }
 
 .title h5 {
@@ -24,6 +23,15 @@ body {
   font-size: 30px;
   margin-top: -40px;
 }
+
+.scoreH {
+  display: none;
+}
+
+.score {
+  display: none;
+}
+
 
 .button-into {
   margin-left: 900px;
@@ -52,7 +60,7 @@ body {
   margin-left: 700px;
   margin-top: 80px;
   transition: transform 0.7s ease;
-  /* display: none; */
+  display: none;
 }
 
 .login h3 {
@@ -72,14 +80,15 @@ body {
   font-size: 16px;
   transition: transform 0.3s ease;
   border-radius: 10px;
+  margin-left: 90px;
 }
 
 .btns-Play  button:hover {
   transform: scale(1.2);
 }
 .nivelsContainer {
-margin-left: 300px;
-position: fixed;
+margin-left: 500px;
+position: absolute;
 }
 .nivelsContainer button {
   padding: 10px 20px;
@@ -130,18 +139,19 @@ position: fixed;
 }
 
 .btnsOptions {
-  display: none;
+  /* display: none; */
   position: fixed; /* Opcional: también puedes usar 'position: absolute;' */
   top: 100px; /* Posición vertical fija */
   left: 100px; /* Posición horizontal fija */
   /* Otros estilos para el div */
-  margin-top: 430px;
-  margin-left: 600px;
+  margin-top: 530px;
+  margin-left: 800px;
+  font-size: 10px;
 }
 
 .btnsOptions button {
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 26px;
   transition: transform 0.3s ease;
   border-radius: 10px;
   padding-right: 10px;

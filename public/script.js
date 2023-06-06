@@ -12,14 +12,14 @@ var nivelsContainer = document.getElementById('nivelsContainer');
 var btnYes = document.getElementById('btnYes');
 var btnNot = document.getElementById('btnNot');
 var btnsOptions = document.getElementById('btnsOptions');
+var scoreH = document.getElementById('scoreH');
 var score = document.getElementById('score');
 var check = document.getElementById('check');
 var smark = document.getElementById('smark');
 
 
+let palabras  
 
-let palabras  /* ['camisa','sorteo','barco','sandalia','loma','peru','hola',"zeus","afrodita", "grisales","conejo","rabia","acelerador","manuales","gorro"] */
-// array para comparar las palabras
 const palabrasMostradas = [];
 
 const palabrasAle = [];
@@ -41,8 +41,11 @@ let users;
 let user;
 
 let win ;
+
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
+
 var isBtnNotLocked  = false;
+
 var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
 
 // Agregar evento al botón de "Ingresar"
@@ -111,11 +114,13 @@ btnPlay.addEventListener('click', function() {
     button.style.display = 'none';
   }); */
 
-
+//funcion que muestra las primeras 5 palabras 
 function mostrarPalabrasNivel(nivelCurrent) {
   // oculta los botones 
   nivelButtons.forEach(function(button) {
     button.style.display = 'none';
+    score.style.display = 'block';
+    scoreH.style.display = 'block'
   });
   // Obtener las palabras aleatorias del nivel
 
@@ -192,10 +197,10 @@ function mostrarPalabrasNivel(nivelCurrent) {
     // Eliminar la palabra mostrada después de 5 segundos
     setTimeout(function() {
       palabraElement.remove();
-    }, 4500);
-  }, 5000);
+    }, 500);
+  }, 1000);
 }
-
+//funcion que muestra las palabras aletorias con todos los jugadores 
 function mostrarOpciones() {
   btnsOptions.style.display = 'block';
 
@@ -250,8 +255,14 @@ function mostrarOpciones() {
 
   setTimeout(function() {
     primeraPalabraElement.remove();
+    if (!press) {
+      smark.style.display = 'block';
+    }
   }, 5000);
 
+  setTimeout(function() {
+      smark.style.display = 'none';
+  }, 5300);
 
   let index = 1;
   const intervalo = setInterval(function() {
@@ -262,9 +273,10 @@ function mostrarOpciones() {
         const nivelnext = nivelgame[nivelgame.length-1];
         updateUser(user,nivelnext)
       }
-      nivelButtons.forEach(function(button) {
+      endGame();
+      /* nivelButtons.forEach(function(button) {
         button.style.display = 'block';
-      });
+      }); */
       
       return;
     }
@@ -275,6 +287,7 @@ function mostrarOpciones() {
     palabrasAle.push(palabrasAMostrar[index]);
     palabraPantalla = palabrasAMostrar[index];
     press = false;
+    
  
       btnYes.classList.remove('bloqueado');
       btnNot.classList.remove('bloqueado');
@@ -285,8 +298,18 @@ function mostrarOpciones() {
     index++;
 
     setTimeout(function() {
+      if (!press) {
+        smark.style.display = 'block';
+      }
+    }, 4900);
+  
+    setTimeout(function() {
+        smark.style.display = 'none';
+    }, 5000);
+
+    setTimeout(function() {
       palabraElement.remove();
-    }, 4500);
+    }, 4980);
   }, 5000);
 }
 
@@ -368,6 +391,8 @@ btnNot.addEventListener('click', function() {
     
     if (!palabrasMostradas.includes(palabraPantalla)) {
       check.style.display = 'block';
+      punctuation++;
+      score.textContent = punctuation;
     }
     else{
       smark.style.display = 'block'
@@ -422,7 +447,7 @@ function leerArchivo() {
   xhttp.open("GET", "diccionario.txt", true);
   xhttp.send();
 }
-
+// funcion que trae todos los usuarios
 function bringUsers() {
   var xhttp = new XMLHttpRequest();
 
@@ -443,7 +468,7 @@ function bringUsers() {
   xhttp.send();
 }
 
-
+//funcion que agrega un usuario
 function addUser(texto) {
   fetch('http://localhost:3000/escribirArchivo', {
   method: 'POST',
@@ -471,7 +496,7 @@ function createNivels(num) {
   }
 }
 
-// funcion que los datos del jugador
+// funcion que  consegui los los datos del jugador
 function findUser(array, palabraBuscada) {
   for (let i = 0; i < array.length; i++) {
     const elemento = array[i].split(':');
@@ -488,7 +513,7 @@ function findUser(array, palabraBuscada) {
   
   return null; // Si la palabra no se encuentra en el array, se devuelve null
 }
-
+//funcion que actualiza el nivel del jugador
 function updateUser(user,nivel) {
   fetch('http://localhost:3000/actualizarArchivo', {
   method: 'POST',
@@ -506,5 +531,18 @@ function updateUser(user,nivel) {
   })
   .catch((error) => {
     console.error('Error en la solicitud:', error);
+  });
+}
+
+//funcion que determina que hacer cuando se termine el juego 
+function endGame() {
+  btnYes.style.display = 'none';
+  btnNot.style.display = 'none';
+  punctuation = 0
+  score.style.display = 'none';
+  scoreH.style.display = 'none'
+  nivelButtons.forEach(function(button) {
+    button.style.display = 'block';
+    button.style.marginLeft = '400px';
   });
 }
