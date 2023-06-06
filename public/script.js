@@ -33,6 +33,8 @@ let palabraPantalla;
  let nivelButtons = [];
 
  let nivelCurrent; 
+
+ let users;
  
  
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
@@ -44,21 +46,18 @@ getInto.addEventListener('click', function() {
     getInto.style.display = 'none';
     login.style.display = 'block';
     leerArchivo();
+    bringUsers();
   
 });
 
 // Agregar evento al botón de "Guardar"
 btnLogin.addEventListener('click', function() {
   var texto = apodoInput.value; // Obtener el valor del input
-  
-  // Verificar si se ingresó un apodo válido
- /*  if (apodo.trim() !== '') {
-    localStorage.setItem('apodo', apodo); // Guardar apodo en Local Storage
-    alert('Apodo guardado exitosamente');
-  } else {
-    alert('Ingrese un apodo válido');
-  } */
-  addUser(texto)
+  if(users.includes(texto)) alert("welcome again")
+  else {
+    alert("user created")
+    addUser(texto)
+  }
   login.style.display = 'none';
   btnsPlay.style.display = 'block';
 });
@@ -290,22 +289,27 @@ function leerArchivo() {
   xhttp.open("GET", "diccionario.txt", true);
   xhttp.send();
 }
-/* 
-function addUser(texto) {
 
-
+function bringUsers() {
   var xhttp = new XMLHttpRequest();
+
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText); // Respuesta del servidor
-      console.log(texto)
+      var contenido = this.responseText;
+      var arrayDatos = contenido.split('\n'); // Divide el contenido por líneas 
+      /* var arrayDatos = contenido.filter(Boolean);  */ // Elimina las líneas vacías
+
+      users = arrayDatos; // Asigna los datos al array de usuarios
+      console.log(users); // Imprime el array de usuarios en la consola
+
+      // Aquí puedes realizar cualquier manipulación adicional de los datos
     }
   };
 
-  xhttp.open("GET", "agregar.php", true);
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send("texto=" + encodeURIComponent(texto));
-} */
+  xhttp.open("GET", "usuarios.txt", true);
+  xhttp.send();
+}
+
 
 function addUser(texto) {
   fetch('http://localhost:3000/escribirArchivo', {
