@@ -28,13 +28,17 @@ let palabraPantalla;
 
  let press = false;
 
- let nivelgame = [1]
+ let nivelgame = [];
 
  let nivelButtons = [];
 
  let nivelCurrent; 
+
+ let users;
+
+ let user;
  
- 
+ let win ;
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
 var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
 
@@ -44,21 +48,25 @@ getInto.addEventListener('click', function() {
     getInto.style.display = 'none';
     login.style.display = 'block';
     leerArchivo();
+    bringUsers();
   
 });
 
 // Agregar evento al botón de "Guardar"
 btnLogin.addEventListener('click', function() {
   var texto = apodoInput.value; // Obtener el valor del input
-  
-  // Verificar si se ingresó un apodo válido
- /*  if (apodo.trim() !== '') {
-    localStorage.setItem('apodo', apodo); // Guardar apodo en Local Storage
-    alert('Apodo guardado exitosamente');
-  } else {
-    alert('Ingrese un apodo válido');
-  } */
-  addUser(texto)
+  const resultado  = findUser(users,texto);
+  if(resultado) {
+    alert(`welcome again ${resultado.palabra}`)
+    user = resultado.palabra;
+    createNivels(resultado.numero);
+  }
+  else {
+    alert("user created");
+    user = `${texto}:1`;
+    nivelgame.push(1);
+    addUser(user);
+  }
   login.style.display = 'none';
   btnsPlay.style.display = 'block';
 });
@@ -101,14 +109,57 @@ btnPlay.addEventListener('click', function() {
   }); */
 
 
-function mostrarPalabrasNivel(nivel) {
+function mostrarPalabrasNivel(nivelCurrent) {
   // oculta los botones 
   nivelButtons.forEach(function(button) {
     button.style.display = 'none';
   });
-
   // Obtener las palabras aleatorias del nivel
-  const palabrasNivel = obtenerPalabrasAleatorias(5, palabras);
+
+  if(nivelCurrent==1 || nivelCurrent==2) {
+    totalWords = nivelCurrent*10;
+    win = totalWords*0.7
+  }
+  if(nivelCurrent==3) {
+    totalWords = nivelCurrent*10-5;
+    win = totalWords*0.75
+  }
+
+  if(nivelCurrent==4){
+    totalWords = nivelCurrent*10-10;
+    win = totalWords*0.8
+  }
+
+  if(nivelCurrent==5){
+    totalWords = nivelCurrent*10-15;
+    win = totalWords*0.8
+  }
+  if(nivelCurrent== 6){
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.85
+  }
+
+  if(nivelCurrent==7){
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.9
+  }
+
+  if(nivelCurrent==8) {
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.9
+  }
+
+  if(nivelCurrent==9){
+    totalWords = nivelCurrent*10-20;
+    win = totalWords*0.95
+  }
+
+  if(nivelCurrent==10){
+    totalWords = nivelCurrent*10;
+    win = totalWords
+  }
+
+  const palabrasNivel = obtenerPalabrasAleatorias(totalWords, palabras);
 
   // Mostrar la primera palabra inmediatamente
   const primeraPalabraElement = document.createElement('h3');
@@ -144,31 +195,73 @@ function mostrarPalabrasNivel(nivel) {
 
 function mostrarOpciones() {
   btnsOptions.style.display = 'block';
- /*  const puntaje = document.createElement('h1');
-  puntaje.textContent = 0;
-  nivelsContainer.appendChild(puntaje); */
 
-   /* btnNot.style.display = 'block';   */
-  // creo un nuevo array con otras 5 palabras aletorias 
-  let palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
+  if(nivelCurrent==1 || nivelCurrent==2) {
+    totalWords = nivelCurrent*10;
+  }
+  if(nivelCurrent==3) {
+    totalWords = nivelCurrent*10-5;
+  }
+
+  if(nivelCurrent==4){
+    totalWords = nivelCurrent*10-10;
+  }
+
+  if(nivelCurrent==5){
+    totalWords = nivelCurrent*10-15;
+  }
+  if(nivelCurrent== 6){
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==7){
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==8) {
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==9){
+    totalWords = nivelCurrent*10-20;
+  }
+
+  if(nivelCurrent==10){
+    totalWords = nivelCurrent*10;
+  }
+
+  let palabrasAleatorias = obtenerPalabrasAleatorias(totalWords, palabras);
   // ejecuto un bucle para que las palabras no se repitan 
   while (!sonDiferentes(palabrasMostradas, palabrasAleatorias)) {
-    palabrasAleatorias = obtenerPalabrasAleatorias(5, palabras);
+    palabrasAleatorias = obtenerPalabrasAleatorias(totalWords, palabras);
   }
   // concateno las palabras mostradas y las nuevas palabras totalmente diferentes 
   const palabrasAMostrar = [...palabrasMostradas, ...palabrasAleatorias];
   // cambio los indices del array par mostrarlas aletoriamentes 
   shuffleArray(palabrasAMostrar);
 
-  let index = 0;
+  const primeraPalabraElement = document.createElement('h3');
+  primeraPalabraElement.textContent = palabrasAMostrar[0];
+  nivelsContainer.appendChild(primeraPalabraElement);
+  palabrasAle.push(palabrasAMostrar[0]);
+
+  setTimeout(function() {
+    primeraPalabraElement.remove();
+  }, 5000);
+
+
+  let index = 1;
   const intervalo = setInterval(function() {
     if (index >= palabrasAMostrar.length) {
       clearInterval(intervalo);
-      if(punctuation>4) desbloquearSiguienteNivel(nivelCurrent)
+      if(punctuation=>win) {
+        desbloquearSiguienteNivel(nivelCurrent)
+        const nivelnext = nivelgame[nivelgame.length-1];
+        updateUser(user,nivelnext)
+      }
       nivelButtons.forEach(function(button) {
         button.style.display = 'block';
       });
-      console.log(nivelgame)
       
       return;
     }
@@ -183,8 +276,8 @@ function mostrarOpciones() {
 
     setTimeout(function() {
       palabraElement.remove();
-    }, 3000);
-  }, 4000);
+    }, 4500);
+  }, 5000);
 }
 
 
@@ -290,22 +383,27 @@ function leerArchivo() {
   xhttp.open("GET", "diccionario.txt", true);
   xhttp.send();
 }
-/* 
-function addUser(texto) {
 
-
+function bringUsers() {
   var xhttp = new XMLHttpRequest();
+
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      console.log(this.responseText); // Respuesta del servidor
-      console.log(texto)
+      var contenido = this.responseText;
+      var arrayDatos = contenido.split('\n'); // Divide el contenido por líneas 
+      /* var arrayDatos = contenido.filter(Boolean);  */ // Elimina las líneas vacías
+
+      users = arrayDatos; // Asigna los datos al array de usuarios
+      console.log(users); // Imprime el array de usuarios en la consola
+
+      // Aquí puedes realizar cualquier manipulación adicional de los datos
     }
   };
 
-  xhttp.open("GET", "agregar.php", true);
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send("texto=" + encodeURIComponent(texto));
-} */
+  xhttp.open("GET", "usuarios.txt", true);
+  xhttp.send();
+}
+
 
 function addUser(texto) {
   fetch('http://localhost:3000/escribirArchivo', {
@@ -320,6 +418,51 @@ function addUser(texto) {
       console.log('Palabra guardada correctamente');
     } else {
       console.log('Error al guardar la palabra');
+    }
+  })
+  .catch((error) => {
+    console.error('Error en la solicitud:', error);
+  });
+}
+
+//funcion que crea los niveles 
+function createNivels(num) {
+  for(let i = 1; i <= num; i++) {
+    nivelgame.push(i);
+  }
+}
+
+// funcion que los datos del jugador
+function findUser(array, palabraBuscada) {
+  for (let i = 0; i < array.length; i++) {
+    const elemento = array[i].split(':');
+    const palabra = elemento[0];
+    const numero = parseInt(elemento[1]);
+    
+    if (palabra === palabraBuscada) {
+      return {
+        palabra: palabra,
+        numero: numero
+      };
+    }
+  }
+  
+  return null; // Si la palabra no se encuentra en el array, se devuelve null
+}
+
+function updateUser(user,nivel) {
+  fetch('http://localhost:3000/actualizarArchivo', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ nombre: user, numero: nivel }),
+})
+  .then((response) => {
+    if (response.ok) {
+      console.log('nivel actualizado correctamente');
+    } else {
+      console.log('Error al actualizar nivel');
     }
   })
   .catch((error) => {
