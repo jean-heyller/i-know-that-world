@@ -26,21 +26,21 @@ const palabrasAle = [];
 //para comparar las palabras que salen en pantalla
 let palabraPantalla;
 //
- let punctuation = 0;
+let punctuation = 0;
 
- let press = false;
+let press = false;
 
- let nivelgame = [];
+let nivelgame = [];
 
- let nivelButtons = [];
+let nivelButtons = [];
 
- let nivelCurrent; 
+let nivelCurrent; 
 
- let users;
+let users;
 
- let user;
- 
- let win ;
+let user;
+
+let win ;
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
 var isBtnNotLocked  = false;
 var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
