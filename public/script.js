@@ -10,9 +10,11 @@ var btnsPlay = document.getElementById('btns-Play');
 var btnPlay = document.getElementById('btnPlay');
 var nivelsContainer = document.getElementById('nivelsContainer');
 var btnYes = document.getElementById('btnYes');
+var btnNot = document.getElementById('btnNot');
 var btnsOptions = document.getElementById('btnsOptions');
 var score = document.getElementById('score');
 var check = document.getElementById('check');
+var smark = document.getElementById('smark');
 
 
 
@@ -40,6 +42,7 @@ let palabraPantalla;
  
  let win ;
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
+var isBtnNotLocked  = false;
 var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
 
 // Agregar evento al botón de "Ingresar"
@@ -272,6 +275,13 @@ function mostrarOpciones() {
     palabrasAle.push(palabrasAMostrar[index]);
     palabraPantalla = palabrasAMostrar[index];
     press = false;
+ 
+      btnYes.classList.remove('bloqueado');
+      btnNot.classList.remove('bloqueado');
+      btnYes.classList.add('desbloqueado');
+      btnNot.classList.add('desbloqueado');
+
+
     index++;
 
     setTimeout(function() {
@@ -327,16 +337,45 @@ function shuffleArray(array) {
 btnYes.addEventListener('click', function() {
   if (press==false) {
     isBtnYesLocked = true; // Bloquear el botón "Yes"
+    isBtnNotLocked = true;
+    btnYes.classList.add('bloqueado');
+    btnNot.classList.add('bloqueado');
+    press = true;
     
     if (palabrasMostradas.includes(palabraPantalla)) {
       punctuation++;
       score.textContent = punctuation;
-      press = true;
       check.style.display = 'block';
+    }
+    else {
+      smark.style.display = 'block';
     }
 
     setTimeout(function() {
-      check.style.display = 'none'; 
+      check.style.display = 'none';
+      smark.style.display = 'none'; 
+    }, 1000);  
+  }
+});
+
+btnNot.addEventListener('click', function() {
+  if (press==false) {
+    isBtnYesLocked = true; // Bloquear el botón "Yes"
+    isBtnNotLocked = true;
+    btnYes.classList.add('bloqueado');
+    btnNot.classList.add('bloqueado');
+    press = true;
+    
+    if (!palabrasMostradas.includes(palabraPantalla)) {
+      check.style.display = 'block';
+    }
+    else{
+      smark.style.display = 'block'
+    }
+
+    setTimeout(function() {
+      check.style.display = 'none';
+      smark.style.display = 'none' 
     }, 1000);  
   }
 });
