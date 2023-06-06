@@ -1,6 +1,3 @@
-jean
-jean
-jean
-jean
-camila
-palomino
+palomino:1
+palomino:1
+camila:2

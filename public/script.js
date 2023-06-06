@@ -28,13 +28,15 @@ let palabraPantalla;
 
  let press = false;
 
- let nivelgame = [1]
+ let nivelgame = [];
 
  let nivelButtons = [];
 
  let nivelCurrent; 
 
  let users;
+
+ let user;
  
  
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
@@ -53,10 +55,17 @@ getInto.addEventListener('click', function() {
 // Agregar evento al botón de "Guardar"
 btnLogin.addEventListener('click', function() {
   var texto = apodoInput.value; // Obtener el valor del input
-  if(users.includes(texto)) alert("welcome again")
+  const resultado  = findUser(users,texto);
+  if(resultado) {
+    alert(`welcome again ${resultado.palabra}`)
+    user = resultado.palabra;
+    createNivels(resultado.numero);
+  }
   else {
-    alert("user created")
-    addUser(texto)
+    alert("user created");
+    user = `${texto}:1`;
+    nivelgame.push(1);
+    addUser(user);
   }
   login.style.display = 'none';
   btnsPlay.style.display = 'block';
@@ -324,6 +333,51 @@ function addUser(texto) {
       console.log('Palabra guardada correctamente');
     } else {
       console.log('Error al guardar la palabra');
+    }
+  })
+  .catch((error) => {
+    console.error('Error en la solicitud:', error);
+  });
+}
+
+//funcion que crea los niveles 
+function createNivels(num) {
+  for(let i = 1; i <= num; i++) {
+    nivelgame.push(i);
+  }
+}
+
+// funcion que los datos del jugador
+function findUser(array, palabraBuscada) {
+  for (let i = 0; i < array.length; i++) {
+    const elemento = array[i].split(':');
+    const palabra = elemento[0];
+    const numero = parseInt(elemento[1]);
+    
+    if (palabra === palabraBuscada) {
+      return {
+        palabra: palabra,
+        numero: numero
+      };
+    }
+  }
+  
+  return null; // Si la palabra no se encuentra en el array, se devuelve null
+}
+
+function updateUser(user,nivel) {
+  fetch('http://localhost:3000/actualizarArchivo', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ nombre: user, numero: nivel }),
+})
+  .then((response) => {
+    if (response.ok) {
+      console.log('nivel actualizado correctamente');
+    } else {
+      console.log('Error al actualizar nivel');
     }
   })
   .catch((error) => {
