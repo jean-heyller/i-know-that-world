@@ -28,6 +28,8 @@ let palabraPantalla;
  let nivelgame = [1]
 
  let nivelButtons = [];
+
+ let nivelCurrent 
  
  
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
@@ -65,12 +67,12 @@ btnPlay.addEventListener('click', function() {
     const nivelButton = document.createElement('button');
     nivelButton.textContent = 'Nivel ' + i;
 
-    if (i === 1) {
-      nivelButton.classList.add('desbloqueado'); // Aplicar clase "desbloqueado" al primer botón
+    if (nivelgame.includes(i)) {
+      nivelButton.classList.add('desbloqueado'); // Aplicar clase "desbloqueado" al botón desbloqueado
     } else {
-      nivelButton.classList.add('bloqueado'); // Aplicar clase "bloqueado" a los demás botones
+      nivelButton.classList.add('bloqueado'); // Aplicar clase "bloqueado" al botón bloqueado
     }
-    
+
     nivelButton.classList.add('nivel-' + i); // Agregar la clase CSS "nivel-x" al botón
 
     nivelsContainer.appendChild(nivelButton);
@@ -78,8 +80,9 @@ btnPlay.addEventListener('click', function() {
 
     nivelButton.addEventListener('click', function() {
       const nivel = i;
-      //comprueba si se puede jugar ese nivel 
+
       if (nivelgame.includes(nivel)) {
+        nivelCurrent = nivel
         mostrarPalabrasNivel(nivel);
       }
     });
@@ -156,10 +159,11 @@ function mostrarOpciones() {
   const intervalo = setInterval(function() {
     if (index >= palabrasAMostrar.length) {
       clearInterval(intervalo);
-      if(punctuation>4) desbloquearSiguienteNivel(nivelgame)
+      if(punctuation>4) desbloquearSiguienteNivel(nivelCurrent)
       nivelButtons.forEach(function(button) {
         button.style.display = 'block';
       });
+      console.log(nivelgame)
       
       return;
     }
@@ -239,17 +243,10 @@ btnYes.addEventListener('click', function() {
   }
 });
 
-
+ 
 // funcion que se encarga de desbloquear el siguiente nivel 
 function desbloquearSiguienteNivel(nivelActual) {
- /*  const nivelNext = (nivelActual + 1)
-
-  if(!nivelgame.includes(nivelNext)){
-    nivelgame.push(nivelNext);
-  } */
-  
   const nivelButton = document.querySelector('.nivel-' + nivelActual);
-  
 
   if (nivelButton) {
     nivelButton.classList.remove('bloqueado');
@@ -262,6 +259,9 @@ function desbloquearSiguienteNivel(nivelActual) {
     if (siguienteNivelButton) {
       siguienteNivelButton.classList.remove('bloqueado');
       siguienteNivelButton.classList.add('desbloqueado');
+
+      // Agregar el siguiente nivel a la lista de niveles desbloqueados
+      nivelgame.push(siguienteNivel);
     }
   }
 }
