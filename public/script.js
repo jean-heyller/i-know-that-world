@@ -10,37 +10,55 @@ var btnsPlay = document.getElementById('btns-Play');
 var btnPlay = document.getElementById('btnPlay');
 var nivelsContainer = document.getElementById('nivelsContainer');
 var btnYes = document.getElementById('btnYes');
+var btnNot = document.getElementById('btnNot');
 var btnsOptions = document.getElementById('btnsOptions');
+var scoreH = document.getElementById('scoreH');
 var score = document.getElementById('score');
 var check = document.getElementById('check');
+var smark = document.getElementById('smark');
+var howplayText = document.getElementById('howplayText');
+var btnhowPlay = document.getElementById('btnhowPlay');
+var btnreturn = document.getElementById('btnreturn');
+var btnreturnWhat = document.getElementById('btnreturnWhat');
+var WhatIsIt = document.getElementById('WhatIsIt');
+var btnWhat = document.getElementById('btnWhat');
+var begginGame = document.getElementById('begginGame');
+var btnbeggin = document.getElementById('btnbeggin');
+var btnHome = document.getElementById('btnHome');
 
+let palabras  
 
-
-let palabras  /* ['camisa','sorteo','barco','sandalia','loma','peru','hola',"zeus","afrodita", "grisales","conejo","rabia","acelerador","manuales","gorro"] */
-// array para comparar las palabras
 const palabrasMostradas = [];
 
 const palabrasAle = [];
 //para comparar las palabras que salen en pantalla
 let palabraPantalla;
 //
- let punctuation = 0;
+let punctuation = 0;
 
- let press = false;
+let press = false;
 
- let nivelgame = [];
+let nivelgame = [];
 
- let nivelButtons = [];
+let nivelButtons = [];
 
- let nivelCurrent; 
+let nivelCurrent; 
 
- let users;
+let users;
 
- let user;
- 
- let win ;
+let user;
+
+let win ;
+
 var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Yes"
-var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
+
+var isBtnNotLocked  = false;
+
+var isLevelButtonLocked = false;
+
+let result
+
+// Variable para controlar el bloqueo de los botones de nivel
 
 // Agregar evento al botón de "Ingresar"
 getInto.addEventListener('click', function() {
@@ -51,6 +69,8 @@ getInto.addEventListener('click', function() {
     bringUsers();
   
 });
+
+
 
 // Agregar evento al botón de "Guardar"
 btnLogin.addEventListener('click', function() {
@@ -70,6 +90,39 @@ btnLogin.addEventListener('click', function() {
   login.style.display = 'none';
   btnsPlay.style.display = 'block';
 });
+// Agregar evento al botón de "ver las instruciones del juego"
+btnhowPlay.addEventListener('click',function(){
+  howplayText.style.display = 'block';
+  btnsPlay.style.display = 'none';
+});
+// Agregar evento al botón de "ver para que sirve el juego "
+btnWhat.addEventListener('click',function(){
+  WhatIsIt.style.display = 'block';
+  btnsPlay.style.display = 'none';
+})
+// Agregar evento al botón de "ver el home "
+btnreturnWhat.addEventListener('click',function(){
+  WhatIsIt.style.display = 'none';
+  btnsPlay.style.display = 'block';
+});
+
+btnbeggin.addEventListener('click',function(){
+  begginGame.style.display = 'none';
+  mostrarOpciones(palabrasMostradas);
+});
+
+btnreturn.addEventListener('click', function(){
+  howplayText.style.display = 'none';
+  btnsPlay.style.display = 'block';
+});
+
+btnHome.addEventListener('click',function(){
+  btnsPlay.style.display = 'block';
+  nivelButtons.forEach(function(button) {
+    button.style.display = 'none';
+  });
+  btnHome.style.display = 'none';
+})
 
 //crea los botones de los niveles 
 btnPlay.addEventListener('click', function() {
@@ -108,11 +161,13 @@ btnPlay.addEventListener('click', function() {
     button.style.display = 'none';
   }); */
 
-
+//funcion que muestra las primeras 5 palabras 
 function mostrarPalabrasNivel(nivelCurrent) {
   // oculta los botones 
   nivelButtons.forEach(function(button) {
     button.style.display = 'none';
+    score.style.display = 'block';
+    scoreH.style.display = 'block'
   });
   // Obtener las palabras aleatorias del nivel
 
@@ -177,7 +232,8 @@ function mostrarPalabrasNivel(nivelCurrent) {
   const intervalo = setInterval(function() {
     if (index >= palabrasNivel.length) {
       clearInterval(intervalo);
-      mostrarOpciones(palabrasMostradas);
+      /* mostrarOpciones(palabrasMostradas); */
+      begginGame.style.display = 'block'
       return;
     }
     const palabraElement = document.createElement('h3');
@@ -189,10 +245,10 @@ function mostrarPalabrasNivel(nivelCurrent) {
     // Eliminar la palabra mostrada después de 5 segundos
     setTimeout(function() {
       palabraElement.remove();
-    }, 4500);
+    }, 4800);
   }, 5000);
 }
-
+//funcion que muestra las palabras aletorias con todos los jugadores 
 function mostrarOpciones() {
   btnsOptions.style.display = 'block';
 
@@ -230,6 +286,8 @@ function mostrarOpciones() {
     totalWords = nivelCurrent*10;
   }
 
+  btnYes.classList.add('desbloqueado');
+  btnNot.classList.add('desbloqueado');
   let palabrasAleatorias = obtenerPalabrasAleatorias(totalWords, palabras);
   // ejecuto un bucle para que las palabras no se repitan 
   while (!sonDiferentes(palabrasMostradas, palabrasAleatorias)) {
@@ -247,8 +305,14 @@ function mostrarOpciones() {
 
   setTimeout(function() {
     primeraPalabraElement.remove();
-  }, 5000);
+    if (!press) {
+      smark.style.display = 'block';
+    }
+  }, 7000);
 
+  setTimeout(function() {
+      smark.style.display = 'none';
+  }, 7300);
 
   let index = 1;
   const intervalo = setInterval(function() {
@@ -259,9 +323,10 @@ function mostrarOpciones() {
         const nivelnext = nivelgame[nivelgame.length-1];
         updateUser(user,nivelnext)
       }
-      nivelButtons.forEach(function(button) {
+      endGame();
+      /* nivelButtons.forEach(function(button) {
         button.style.display = 'block';
-      });
+      }); */
       
       return;
     }
@@ -272,12 +337,30 @@ function mostrarOpciones() {
     palabrasAle.push(palabrasAMostrar[index]);
     palabraPantalla = palabrasAMostrar[index];
     press = false;
+    
+ 
+      btnYes.classList.remove('bloqueado');
+      btnNot.classList.remove('bloqueado');
+      btnYes.classList.add('desbloqueado');
+      btnNot.classList.add('desbloqueado');
+
+
     index++;
 
     setTimeout(function() {
+      if (!press) {
+        smark.style.display = 'block';
+      }
+    }, 7900);
+  
+    setTimeout(function() {
+        smark.style.display = 'none';
+    }, 8000);
+
+    setTimeout(function() {
       palabraElement.remove();
-    }, 4500);
-  }, 5000);
+    }, 7980);
+  }, 8000);
 }
 
 
@@ -323,20 +406,51 @@ function shuffleArray(array) {
   }
 }
 
-
+//define 
 btnYes.addEventListener('click', function() {
   if (press==false) {
     isBtnYesLocked = true; // Bloquear el botón "Yes"
+    isBtnNotLocked = true;
+    btnYes.classList.add('bloqueado');
+    btnNot.classList.add('bloqueado');
+    press = true;
     
     if (palabrasMostradas.includes(palabraPantalla)) {
       punctuation++;
       score.textContent = punctuation;
-      press = true;
       check.style.display = 'block';
+    }
+    else {
+      smark.style.display = 'block';
     }
 
     setTimeout(function() {
-      check.style.display = 'none'; 
+      check.style.display = 'none';
+      smark.style.display = 'none'; 
+    }, 1000);  
+  }
+});
+
+btnNot.addEventListener('click', function() {
+  if (press==false) {
+    isBtnYesLocked = true; // Bloquear el botón "Yes"
+    isBtnNotLocked = true;
+    btnYes.classList.add('bloqueado');
+    btnNot.classList.add('bloqueado');
+    press = true;
+    
+    if (!palabrasMostradas.includes(palabraPantalla)) {
+      check.style.display = 'block';
+      punctuation++;
+      score.textContent = punctuation;
+    }
+    else{
+      smark.style.display = 'block'
+    }
+
+    setTimeout(function() {
+      check.style.display = 'none';
+      smark.style.display = 'none' 
     }, 1000);  
   }
 });
@@ -383,7 +497,7 @@ function leerArchivo() {
   xhttp.open("GET", "diccionario.txt", true);
   xhttp.send();
 }
-
+// funcion que trae todos los usuarios
 function bringUsers() {
   var xhttp = new XMLHttpRequest();
 
@@ -404,7 +518,7 @@ function bringUsers() {
   xhttp.send();
 }
 
-
+//funcion que agrega un usuario
 function addUser(texto) {
   fetch('http://localhost:3000/escribirArchivo', {
   method: 'POST',
@@ -432,7 +546,7 @@ function createNivels(num) {
   }
 }
 
-// funcion que los datos del jugador
+// funcion que  consegui los los datos del jugador
 function findUser(array, palabraBuscada) {
   for (let i = 0; i < array.length; i++) {
     const elemento = array[i].split(':');
@@ -449,7 +563,7 @@ function findUser(array, palabraBuscada) {
   
   return null; // Si la palabra no se encuentra en el array, se devuelve null
 }
-
+//funcion que actualiza el nivel del jugador
 function updateUser(user,nivel) {
   fetch('http://localhost:3000/actualizarArchivo', {
   method: 'POST',
@@ -468,4 +582,30 @@ function updateUser(user,nivel) {
   .catch((error) => {
     console.error('Error en la solicitud:', error);
   });
+}
+
+//funcion que determina que hacer cuando se termine el juego 
+function endGame() {
+  btnYes.style.display = 'none';
+  btnNot.style.display = 'none';
+  result = punctuation
+  if(result>=win){
+
+    alert( `felicidades tu puntuacion fue ${result} desbloqueaste el siguiente nivel `);
+
+  }
+  if(result<win){
+    
+    alert(`lo sentimos tu puntaje fue ${result} no desbloqueaste el siguiente nivel suerte para la proxima `);
+    
+  }
+  punctuation = 0
+  score.style.display = 'none';
+  scoreH.style.display = 'none';
+  nivelButtons.forEach(function(button) {
+    button.style.display = 'block';
+    button.style.marginLeft = '400px';
+  });
+
+  btnHome.style.display = 'block';
 }
