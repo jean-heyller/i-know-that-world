@@ -16,7 +16,15 @@ var scoreH = document.getElementById('scoreH');
 var score = document.getElementById('score');
 var check = document.getElementById('check');
 var smark = document.getElementById('smark');
-
+var howplayText = document.getElementById('howplayText');
+var btnhowPlay = document.getElementById('btnhowPlay');
+var btnreturn = document.getElementById('btnreturn');
+var btnreturnWhat = document.getElementById('btnreturnWhat');
+var WhatIsIt = document.getElementById('WhatIsIt');
+var btnWhat = document.getElementById('btnWhat');
+var begginGame = document.getElementById('begginGame');
+var btnbeggin = document.getElementById('btnbeggin');
+var btnHome = document.getElementById('btnHome');
 
 let palabras  
 
@@ -46,7 +54,11 @@ var isBtnYesLocked = false; // Variable para controlar el bloqueo del botón "Ye
 
 var isBtnNotLocked  = false;
 
-var isLevelButtonLocked = false; // Variable para controlar el bloqueo de los botones de nivel
+var isLevelButtonLocked = false;
+
+let result
+
+// Variable para controlar el bloqueo de los botones de nivel
 
 // Agregar evento al botón de "Ingresar"
 getInto.addEventListener('click', function() {
@@ -57,6 +69,8 @@ getInto.addEventListener('click', function() {
     bringUsers();
   
 });
+
+
 
 // Agregar evento al botón de "Guardar"
 btnLogin.addEventListener('click', function() {
@@ -76,6 +90,39 @@ btnLogin.addEventListener('click', function() {
   login.style.display = 'none';
   btnsPlay.style.display = 'block';
 });
+// Agregar evento al botón de "ver las instruciones del juego"
+btnhowPlay.addEventListener('click',function(){
+  howplayText.style.display = 'block';
+  btnsPlay.style.display = 'none';
+});
+// Agregar evento al botón de "ver para que sirve el juego "
+btnWhat.addEventListener('click',function(){
+  WhatIsIt.style.display = 'block';
+  btnsPlay.style.display = 'none';
+})
+// Agregar evento al botón de "ver el home "
+btnreturnWhat.addEventListener('click',function(){
+  WhatIsIt.style.display = 'none';
+  btnsPlay.style.display = 'block';
+});
+
+btnbeggin.addEventListener('click',function(){
+  begginGame.style.display = 'none';
+  mostrarOpciones(palabrasMostradas);
+});
+
+btnreturn.addEventListener('click', function(){
+  howplayText.style.display = 'none';
+  btnsPlay.style.display = 'block';
+});
+
+btnHome.addEventListener('click',function(){
+  btnsPlay.style.display = 'block';
+  nivelButtons.forEach(function(button) {
+    button.style.display = 'none';
+  });
+  btnHome.style.display = 'none';
+})
 
 //crea los botones de los niveles 
 btnPlay.addEventListener('click', function() {
@@ -185,7 +232,8 @@ function mostrarPalabrasNivel(nivelCurrent) {
   const intervalo = setInterval(function() {
     if (index >= palabrasNivel.length) {
       clearInterval(intervalo);
-      mostrarOpciones(palabrasMostradas);
+      /* mostrarOpciones(palabrasMostradas); */
+      begginGame.style.display = 'block'
       return;
     }
     const palabraElement = document.createElement('h3');
@@ -197,8 +245,8 @@ function mostrarPalabrasNivel(nivelCurrent) {
     // Eliminar la palabra mostrada después de 5 segundos
     setTimeout(function() {
       palabraElement.remove();
-    }, 500);
-  }, 1000);
+    }, 4800);
+  }, 5000);
 }
 //funcion que muestra las palabras aletorias con todos los jugadores 
 function mostrarOpciones() {
@@ -238,6 +286,8 @@ function mostrarOpciones() {
     totalWords = nivelCurrent*10;
   }
 
+  btnYes.classList.add('desbloqueado');
+  btnNot.classList.add('desbloqueado');
   let palabrasAleatorias = obtenerPalabrasAleatorias(totalWords, palabras);
   // ejecuto un bucle para que las palabras no se repitan 
   while (!sonDiferentes(palabrasMostradas, palabrasAleatorias)) {
@@ -258,11 +308,11 @@ function mostrarOpciones() {
     if (!press) {
       smark.style.display = 'block';
     }
-  }, 5000);
+  }, 7000);
 
   setTimeout(function() {
       smark.style.display = 'none';
-  }, 5300);
+  }, 7300);
 
   let index = 1;
   const intervalo = setInterval(function() {
@@ -301,16 +351,16 @@ function mostrarOpciones() {
       if (!press) {
         smark.style.display = 'block';
       }
-    }, 4900);
+    }, 7900);
   
     setTimeout(function() {
         smark.style.display = 'none';
-    }, 5000);
+    }, 8000);
 
     setTimeout(function() {
       palabraElement.remove();
-    }, 4980);
-  }, 5000);
+    }, 7980);
+  }, 8000);
 }
 
 
@@ -356,7 +406,7 @@ function shuffleArray(array) {
   }
 }
 
-
+//define 
 btnYes.addEventListener('click', function() {
   if (press==false) {
     isBtnYesLocked = true; // Bloquear el botón "Yes"
@@ -538,11 +588,24 @@ function updateUser(user,nivel) {
 function endGame() {
   btnYes.style.display = 'none';
   btnNot.style.display = 'none';
+  result = punctuation
+  if(result>=win){
+
+    alert( `felicidades tu puntuacion fue ${result} desbloqueaste el siguiente nivel `);
+
+  }
+  if(result<win){
+    
+    alert(`lo sentimos tu puntaje fue ${result} no desbloqueaste el siguiente nivel suerte para la proxima `);
+    
+  }
   punctuation = 0
   score.style.display = 'none';
-  scoreH.style.display = 'none'
+  scoreH.style.display = 'none';
   nivelButtons.forEach(function(button) {
     button.style.display = 'block';
     button.style.marginLeft = '400px';
   });
+
+  btnHome.style.display = 'block';
 }
